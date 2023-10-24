@@ -1,21 +1,16 @@
-import React from 'react';
-import {useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import MovieCard from './Moviecard';
-
 import './App.css';
-import SearchIcon from "./search.svg";
+import SearchIcon from './search.svg';
 
-//cd733c6e
-
-const API_URL = "https://www.omdbapi.com?apikey=cd733c6e";
-
+const API_URL = 'https://www.omdbapi.com?apikey=cd733c6e';
 
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    searchMovies("Batman");
+    searchMovies('Batman');
   }, []);
 
   const searchMovies = async (title) => {
@@ -23,6 +18,16 @@ const App = () => {
     const data = await response.json();
 
     setMovies(data.Search);
+  };
+
+  const handleSearch = () => {
+    searchMovies(searchTerm);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      searchMovies(searchTerm);
+    }
   };
 
   return (
@@ -34,18 +39,19 @@ const App = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search for movies"
+          onKeyPress={handleKeyPress} // Add this event handler
         />
         <img
           src={SearchIcon}
           alt="search"
-          onClick={() => searchMovies(searchTerm)}
+          onClick={handleSearch}
         />
       </div>
 
       {movies?.length > 0 ? (
         <div className="container">
           {movies.map((movie) => (
-            <MovieCard movie={movie} />
+            <MovieCard movie={movie} key={movie.imdbID} /> // Add a unique key prop
           ))}
         </div>
       ) : (
